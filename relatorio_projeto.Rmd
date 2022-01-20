@@ -1,0 +1,356 @@
+---
+title: "PROJETO DE ANALYTIsCS DESCRITIVA - MBA BI & ANALYTICS - CIn UFPE"
+author: "Carlos Augusto Gomes da Silva"
+date: "`r Sys.Date()`"
+output:
+  prettydoc::html_pretty:
+    theme: hpstr
+    highlight: vignette
+---
+
+
+## CONJUNTO DE DADOS
+
+Base construída através dos dados demográficos do último censo do IBGE e dados contidos na base das empresas da cidade do Recife com os seus respectivos endereços e atividades, que estão inscritas como contribuinte no Município do Recife. 
+
+```{r, eval=TRUE, echo=TRUE, message=FALSE}
+  
+library(tidyverse)
+database <- read_csv("database_full.csv",show_col_types = FALSE)
+str(database)
+
+```
+
+
+## OBJETIVO
+
+ Explorar os dados e identificar:
+
+* Ramos de Atividade predominantes por bairro.
+* Bairros com maior/menor incidência de atividade econômica geradora de incômodo.
+* Bairros com maior oferta de serviços proporcionalmente à população. 
+  
+  Ex: Educação, Saúde(Fitness), Lazer.
+  
+* Serviços direcionados ao gênero. 
+
+  Ex. Estética(Feminino)
+	
+## TRATAMENTO DOS DADOS
+
+* Excluir colunas:
+    `data_encerramento`, `situacao_empresa` 
+* Renomear colunas: 
+    - Total (`habitantes_total`)
+    - Homens (`habitantes_homens`)
+    - Mulheres (`habitantes_mulheres`)
+* Preencher dados faltantes em `nome_fantasia` com "NENHUM"
+
+```{r, echo=TRUE, eval=FALSE}
+
+library(tidyverse)
+database <- read_csv("database_full.csv",show_col_types = FALSE)
+
+database <- select(database, - data_encerramento)
+database <- select(database, - situacao_empresa)
+
+database <- rename(database, c("habitantes_total" = "Total", 
+                               "habitantes_homens" = "Homens",
+                               "habitantes_mulheres" = "Mulheres"))
+
+database$nome_fantasia[database$nome_fantasia == "Não Existe"] <- "NENHUM"
+database$nome_fantasia[database$nome_fantasia == "."] <- "NENHUM"
+
+```
+
+## ATIVIDADES PREDOMINANTES POR BAIRRO
+
+```{r, echo=TRUE, eval=FALSE}
+
+frequentes <- database %>% 
+  group_by(nome_bairro,desc_atividade,nome_grupo) %>%
+  count(sort = TRUE)
+  
+varzea <- frequentes %>%
+  filter(nome_bairro == "VARZEA")
+
+write_csv(varzea,"varzea.csv")
+
+```
+## VISUALIZAÇÃO
+
+```{r, echo=FALSE, eval=TRUE, results='axis'}
+
+varzea <- readr::read_csv("varzea.csv", show_col_types = FALSE)
+knitr::kable(head(varzea,5),digits = 1,col.names = c("Bairro","Atividade","Grupo","Qtde"))
+
+```
+
+## BAIRROS COM MAIOR/MENOR PRESENÇA DE EMPRESAS GERADORAS DE INCÔMODO
+
+```{r, echo=TRUE, eval=FALSE}
+
+incomodos <- database %>% 
+  filter(incomodo == "S") %>%
+  group_by(nome_bairro) %>%
+  count(sort = TRUE)
+
+write_csv(incomodos,"incomodos.csv")
+
+```
+
+## VISUALIZAÇÃO
+
+```{r, echo=FALSE, eval=FALSE, results='axis'}
+
+incomodos <- readr::read_csv("incomodos.csv", show_col_types = FALSE)
+knitr::kable(head(incomodos,10),digits = 1,col.names = c("Bairro","Qtde"))
+knitr::kable(tail(incomodos,10),digits = 1,col.names = c("Bairro","Qtde"))
+
+```
+
+```{r, eval=TRUE, echo=FALSE, message=FALSE}
+
+library(tidyverse)
+incomodos <- readr::read_csv("incomodos.csv", show_col_types = FALSE)
+
+  incomodos_fac <- incomodos                                                 # Replicate original data
+  incomodos_fac$nome_bairro <- factor(incomodos_fac$nome_bairro,             # Factor levels in decreasing order
+              levels = incomodos_fac$nome_bairro[order(incomodos_fac$n, decreasing = FALSE)])
+  
+  mynamestheme <- theme(plot.title = element_text(family = "Fira Code", face = "bold", size = (12)), 
+                 legend.title = element_text(colour = "steelblue",  face = "bold.italic", family = "Fira Code"), 
+                 legend.text = element_text(face = "italic", colour="steelblue4",family = "Fira Code"), 
+                  axis.title = element_text(family = "Fira Code", size = (10), colour = "steelblue4", face = "bold"),
+                  axis.text = element_text(family = "Fira Code", face = "italic", colour = "steelblue4", size = (10)))
+
+  ggplot(head(incomodos_fac,10)) +
+    geom_col( aes (x = n, y = nome_bairro, fill = n), show.legend = TRUE) +
+    xlab("Empresas causadoras de incômodo") + 
+    ylab("Bairros") + 
+    guides(fill=guide_legend(title="Qtde")) +
+    ggtitle("Bairros com Maior Incômodo Potêncial") + mynamestheme
+
+
+  ggplot(tail(incomodos_fac,10)) +
+    geom_col( aes (x = n, y = nome_bairro, fill = n), show.legend = TRUE) +
+    xlab("Empresas causadoras de incômodo") + 
+    ylab("Bairros") + 
+    guides(fill=guide_legend(title="Qtde")) +
+    ggtitle("Bairros com Menor Incômodo Potêncial") + mynamestheme
+
+```
+
+## BAIRROS COM MAIOR OFERTA DE SERVIÇOS PROPORCIONALMENTE À POPULAÇÃO
+
+```{r, echo=TRUE,eval=TRUE, message=FALSE}
+
+library(tidyverse)
+database <- read_csv("database_full.csv",show_col_types = FALSE)
+
+frequentes_2 <- database %>% 
+  group_by(nome_bairro,nome_grupo,desc_atividade,Total) %>%
+  count(sort = TRUE)
+
+frequentes_3 <- database %>% 
+  group_by(nome_bairro,nome_grupo,desc_atividade,Mulheres) %>%
+  count(sort = TRUE)
+
+fitness <- frequentes_2 %>%
+  filter(desc_atividade == "ATIVIDADES DE CONDICIONAMENTO FÍSICO")
+
+fitness <- fitness %>% 
+  mutate(proporcao = Total/n)  %>% 
+  arrange(proporcao)
+
+educacao <- frequentes_2 %>%
+  filter(desc_atividade == "EDUCAÇÃO INFANTIL - PRÉ-ESCOLA")
+
+educacao <- educacao %>% 
+  mutate(proporcao = Total/n)  %>% 
+  arrange(proporcao)
+
+lazer <- frequentes_2 %>%
+  filter(desc_atividade == "PRODUÇÃO MUSICAL")
+
+lazer <- lazer %>% 
+  mutate(proporcao = Total/n)  %>% 
+  arrange(proporcao)
+  
+estetica <- frequentes_3 %>%
+  filter(desc_atividade == "CABELEIREIROS, MANICURE E PEDICURE")
+
+estetica <- estetica %>% 
+  mutate(proporcao = Mulheres/n)  %>% 
+  arrange(proporcao)
+  
+
+write_csv(fitness,"fitness.csv")
+write_csv(educacao,"educacao.csv")
+write_csv(lazer,"lazer.csv")
+write_csv(estetica,"estetica.csv")
+
+```
+
+## BAIRROS COM MAIOR E MENOR OFERTA DE ACADEMIAS
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE, results='asis'}
+
+fitness <- readr::read_csv("fitness.csv", show_col_types = FALSE)
+knitr::kable(head(fitness,5),digits = 1,col.names = c("Bairro","Ramo","Atividade","Total Habitantes"
+                                            ,"Qtde","Proporção de Habitantes"))
+
+knitr::kable(tail(fitness,5),digits = 1,col.names = c("Bairro","Ramo","Atividade","Total Habitantes"
+                                            ,"Qtde","Proporção de Habitantes"))
+
+```
+
+## VISUALIZAÇÃO
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE, fig.align='center'}
+
+library(tidyverse)
+fitness <- readr::read_csv("fitness.csv", show_col_types = FALSE)
+
+  fitness_fac <- fitness                                                 # Replicate original data
+  fitness_fac$nome_bairro <- factor(fitness_fac$nome_bairro,             # Factor levels in decreasing order
+              levels = fitness_fac$nome_bairro[order(fitness_fac$proporcao, decreasing = TRUE)])
+
+  ggplot(head(fitness_fac,5)) +
+    geom_col( aes (x = proporcao, y = nome_bairro, fill = proporcao), show.legend = TRUE) +
+    xlab("Habitantes por empresa") + 
+    ylab("Bairros") + 
+    guides(fill=guide_legend(title="Proporção")) +
+    ggtitle("Bairros com Maior Oferta de Academias") + mynamestheme
+
+  ggplot(tail(fitness_fac,5)) +
+    geom_col( aes (x = proporcao, y = nome_bairro, fill = proporcao), show.legend = TRUE) +
+    xlab("Habitantes por empresa") + 
+    ylab("Bairros") + 
+    guides(fill=guide_legend(title="Proporção")) +
+    ggtitle("Bairros com Menor Oferta de Academias") + mynamestheme 
+
+```
+
+## BAIRROS COM MAIOR E MENOR OFERTA DE ENSINO INFANTIL
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE, results='asis'}
+
+educacao <- readr::read_csv("educacao.csv", show_col_types = FALSE)
+knitr::kable(head(educacao,5),digits = 1,col.names = c("Bairro","Ramo","Atividade","Total Habitantes"
+                                            ,"Qtde","Proporção de Habitantes"))
+
+knitr::kable(tail(educacao,5),digits = 1,col.names = c("Bairro","Ramo","Atividade","Total Habitantes"
+                                            ,"Qtde","Proporção de Habitantes"))
+
+```
+
+## VISUALIZAÇÃO
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE, fig.align='center'}
+
+library(tidyverse)
+educacao <- readr::read_csv("educacao.csv", show_col_types = FALSE)
+
+  educacao_fac <- educacao                                                 # Replicate original data
+  educacao_fac$nome_bairro <- factor(educacao_fac$nome_bairro,             # Factor levels in decreasing order
+              levels = educacao_fac$nome_bairro[order(educacao_fac$proporcao, decreasing = TRUE)])
+
+  ggplot(head(educacao_fac,5)) +
+    geom_col( aes (x = proporcao, y = nome_bairro, fill = proporcao), show.legend = TRUE) +
+    xlab("Habitantes por empresa") + 
+    ylab("Bairros") + 
+    guides(fill=guide_legend(title="Proporção")) +
+    ggtitle("Bairros com Maior Oferta de Educação Infatil") + mynamestheme
+
+  ggplot(tail(educacao_fac,5)) +
+    geom_col( aes (x = proporcao, y = nome_bairro, fill = proporcao), show.legend = TRUE) +
+    xlab("Habitantes por empresa") + 
+    ylab("Bairros") + 
+    guides(fill=guide_legend(title="Proporção")) +
+    ggtitle("Bairros com Menor Oferta de Educação Infatil") + mynamestheme 
+
+```
+
+## BAIRROS COM MAIOR E MENOR OFERTA DE LAZER
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE, results='asis'}
+
+lazer <- readr::read_csv("lazer.csv", show_col_types = FALSE)
+knitr::kable(head(lazer,5),digits = 1,col.names = c("Bairro","Ramo","Atividade","Total Habitantes"
+                                            ,"Qtde","Proporção de Habitantes"))
+
+knitr::kable(tail(lazer,5),digits = 1,col.names = c("Bairro","Ramo","Atividade","Total Habitantes"
+                                            ,"Qtde","Proporção de Habitantes"))
+
+```
+
+## VISUALIZAÇÃO
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE, fig.align='center'}
+
+library(tidyverse)
+lazer <- readr::read_csv("lazer.csv", show_col_types = FALSE)
+
+  lazer_fac <- lazer                                                 # Replicate original data
+  lazer_fac$nome_bairro <- factor(lazer_fac$nome_bairro,             # Factor levels in decreasing order
+              levels = lazer_fac$nome_bairro[order(lazer_fac$proporcao, decreasing = TRUE)])
+
+  ggplot(head(lazer_fac,5)) +
+    geom_col( aes (x = proporcao, y = nome_bairro, fill = proporcao), show.legend = TRUE) +
+    xlab("Habitantes por empresa") + 
+    ylab("Bairros") + 
+    guides(fill=guide_legend(title="Proporção")) +
+    ggtitle("Bairros com Maior Oferta de Produções Musicais") + mynamestheme
+
+  ggplot(tail(lazer_fac,5)) +
+    geom_col( aes (x = proporcao, y = nome_bairro, fill = proporcao), show.legend = TRUE) +
+    xlab("Habitantes por empresa") + 
+    ylab("Bairros") + 
+    guides(fill=guide_legend(title="Proporção")) +
+    ggtitle("Bairros com Menor Oferta de Produções Musicais") + mynamestheme  
+
+```
+
+## BAIRROS COM MAIOR E MENOR OFERTA DE SERVIÇOS DE ESTÉTICA FEMININA
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE, results='asis'}
+
+estetica <- readr::read_csv("estetica.csv", show_col_types = FALSE)
+knitr::kable(head(estetica,5),digits = 1,col.names = c("Bairro","Ramo","Atividade","Total Mulheres"
+                                            ,"Qtde","Proporção de Mulheres"))
+
+knitr::kable(tail(estetica,5),digits = 1,col.names = c("Bairro","Ramo","Atividade","Total Mulheres"
+                                            ,"Qtde","Proporção de Mulheres"))
+
+```
+
+## VISUALIZAÇÃO
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE, fig.align='center'}
+
+library(tidyverse)
+estetica <- readr::read_csv("estetica.csv", show_col_types = FALSE)
+
+  estetica_fac <- estetica                                                 # Replicate original data
+  estetica_fac$nome_bairro <- factor(estetica_fac$nome_bairro,             # Factor levels in decreasing order
+              levels = estetica_fac$nome_bairro[order(estetica_fac$proporcao, decreasing = TRUE)])
+
+  ggplot(head(estetica_fac,5)) +
+    geom_col( aes (x = proporcao, y = nome_bairro, fill = proporcao), show.legend = TRUE) +
+    xlab("Habitantes do Sexo Feminino por empresa") + 
+    ylab("Bairros") + 
+    guides(fill=guide_legend(title="Proporção")) +
+    ggtitle("Bairros com Maior Oferta de Serviços de Estética") + mynamestheme
+
+  ggplot(tail(estetica_fac,5)) +
+    geom_col( aes (x = proporcao, y = nome_bairro, fill = proporcao), show.legend = TRUE) +
+    xlab("Habitantes do Sexo Feminino por empresa") + 
+    ylab("Bairros") + 
+    guides(fill=guide_legend(title="Proporção")) +
+    ggtitle("Bairros com Menor Oferta de Serviços de Estética") + mynamestheme  
+
+```
+
+
+
