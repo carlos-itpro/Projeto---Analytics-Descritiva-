@@ -16,7 +16,8 @@ Base construída através dos dados demográficos do último censo do IBGE e dad
 ```{r, eval=TRUE, echo=TRUE, message=FALSE}
   
 library(tidyverse)
-database <- read_csv("database_full.csv",show_col_types = FALSE)
+database <- read_csv("https://github.com/carlos-itpro/Projeto-Analytics-Descritiva/raw/main/database_full.csv",
+                     show_col_types = FALSE)
 str(database)
 
 ```
@@ -49,7 +50,8 @@ str(database)
 ```{r, echo=TRUE, eval=FALSE}
 
 library(tidyverse)
-database <- read_csv("database_full.csv",show_col_types = FALSE)
+database <- read_csv("https://github.com/carlos-itpro/Projeto-Analytics-Descritiva/raw/main/database_full.csv",
+                     show_col_types = FALSE)
 
 database <- select(database, - data_encerramento)
 database <- select(database, - situacao_empresa)
@@ -148,7 +150,8 @@ incomodos <- readr::read_csv("incomodos.csv", show_col_types = FALSE)
 ```{r, echo=TRUE,eval=TRUE, message=FALSE}
 
 library(tidyverse)
-database <- read_csv("database_limpa.csv",show_col_types = FALSE)
+database <- read_csv("https://github.com/carlos-itpro/Projeto-Analytics-Descritiva/raw/main/database_limpa.csv",
+                     show_col_types = FALSE)
 
 frequentes_2 <- database %>% 
   group_by(nome_bairro,nome_grupo,desc_atividade,total) %>%

@@ -149,8 +149,9 @@ a.sourceLine {
 <h2>CONJUNTO DE DADOS</h2>
 <p>Base construída através dos dados demográficos do último censo do IBGE e dados contidos na base das empresas da cidade do Recife com os seus respectivos endereços e atividades, que estão inscritas como contribuinte no Município do Recife.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>database <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;database_full.csv&quot;</span>,<span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(database)</span></code></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>database <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;https://github.com/carlos-itpro/Projeto-Analytics-Descritiva/raw/main/database_full.csv&quot;</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(database)</span></code></pre></div>
 <pre><code>## spec_tbl_df [24,861 × 25] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
 ##  $ cod_empresa_x          : num [1:24861] 6439 9913 6909 4103 9348 ...
 ##  $ razao_social           : chr [1:24861] &quot;COMPANHIA DE TERRENOS PRAZERES&quot; &quot;GRANDES ARMAZENS DO RECIFE S A&quot; &quot;CDC CENTRAL DE DESPACHOS E CONTABILIDADE LTDA&quot; &quot;JOCOAL J C ALBUQUERQUE REPRESENTACOES LTDA&quot; ...
@@ -232,19 +233,20 @@ a.sourceLine {
 <li>Preencher dados faltantes em <code>nome_fantasia</code> com “NENHUM”</li>
 </ul>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>database <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;database_full.csv&quot;</span>,<span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>database <span class="ot">&lt;-</span> <span class="fu">select</span>(database, <span class="sc">-</span> data_encerramento)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>database <span class="ot">&lt;-</span> <span class="fu">select</span>(database, <span class="sc">-</span> situacao_empresa)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>database <span class="ot">&lt;-</span> <span class="fu">rename</span>(database, <span class="fu">c</span>(<span class="st">&quot;total&quot;</span> <span class="ot">=</span> <span class="st">&quot;habitantes_total&quot;</span>, </span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>                               <span class="st">&quot;homens&quot;</span> <span class="ot">=</span> <span class="st">&quot;habitantes_homens&quot;</span>,</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>                               <span class="st">&quot;mulheres&quot;</span> <span class="ot">=</span> <span class="st">&quot;habitantes_mulheres&quot;</span>))</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>database<span class="sc">$</span>nome_fantasia[database<span class="sc">$</span>nome_fantasia <span class="sc">==</span> <span class="st">&quot;Não Existe&quot;</span>] <span class="ot">&lt;-</span> <span class="st">&quot;NENHUM&quot;</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>database<span class="sc">$</span>nome_fantasia[database<span class="sc">$</span>nome_fantasia <span class="sc">==</span> <span class="st">&quot;.&quot;</span>] <span class="ot">&lt;-</span> <span class="st">&quot;NENHUM&quot;</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(database,<span class="st">&quot;database_limpa.csv&quot;</span>)</span></code></pre></div>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>database <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;https://github.com/carlos-itpro/Projeto-Analytics-Descritiva/raw/main/database_full.csv&quot;</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>database <span class="ot">&lt;-</span> <span class="fu">select</span>(database, <span class="sc">-</span> data_encerramento)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>database <span class="ot">&lt;-</span> <span class="fu">select</span>(database, <span class="sc">-</span> situacao_empresa)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>database <span class="ot">&lt;-</span> <span class="fu">rename</span>(database, <span class="fu">c</span>(<span class="st">&quot;total&quot;</span> <span class="ot">=</span> <span class="st">&quot;habitantes_total&quot;</span>, </span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>                               <span class="st">&quot;homens&quot;</span> <span class="ot">=</span> <span class="st">&quot;habitantes_homens&quot;</span>,</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>                               <span class="st">&quot;mulheres&quot;</span> <span class="ot">=</span> <span class="st">&quot;habitantes_mulheres&quot;</span>))</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>database<span class="sc">$</span>nome_fantasia[database<span class="sc">$</span>nome_fantasia <span class="sc">==</span> <span class="st">&quot;Não Existe&quot;</span>] <span class="ot">&lt;-</span> <span class="st">&quot;NENHUM&quot;</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>database<span class="sc">$</span>nome_fantasia[database<span class="sc">$</span>nome_fantasia <span class="sc">==</span> <span class="st">&quot;.&quot;</span>] <span class="ot">&lt;-</span> <span class="st">&quot;NENHUM&quot;</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(database,<span class="st">&quot;database_limpa.csv&quot;</span>)</span></code></pre></div>
 </div>
 <div id="atividades-predominantes-por-bairro" class="section level2">
 <h2>ATIVIDADES PREDOMINANTES POR BAIRRO</h2>
@@ -324,49 +326,50 @@ a.sourceLine {
 <div id="bairros-com-maior-oferta-de-serviços-proporcionalmente-à-população" class="section level2">
 <h2>BAIRROS COM MAIOR OFERTA DE SERVIÇOS PROPORCIONALMENTE À POPULAÇÃO</h2>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>database <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;database_limpa.csv&quot;</span>,<span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>frequentes_2 <span class="ot">&lt;-</span> database <span class="sc">%&gt;%</span> </span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(nome_bairro,nome_grupo,desc_atividade,total) <span class="sc">%&gt;%</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(<span class="at">sort =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>frequentes_3 <span class="ot">&lt;-</span> database <span class="sc">%&gt;%</span> </span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(nome_bairro,nome_grupo,desc_atividade,mulheres) <span class="sc">%&gt;%</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(<span class="at">sort =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>fitness <span class="ot">&lt;-</span> frequentes_2 <span class="sc">%&gt;%</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(desc_atividade <span class="sc">==</span> <span class="st">&quot;ATIVIDADES DE CONDICIONAMENTO FÍSICO&quot;</span>)</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>fitness <span class="ot">&lt;-</span> fitness <span class="sc">%&gt;%</span> </span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">proporcao =</span> total<span class="sc">/</span>n)  <span class="sc">%&gt;%</span> </span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(proporcao)</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>educacao <span class="ot">&lt;-</span> frequentes_2 <span class="sc">%&gt;%</span></span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(desc_atividade <span class="sc">==</span> <span class="st">&quot;EDUCAÇÃO INFANTIL - PRÉ-ESCOLA&quot;</span>)</span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>educacao <span class="ot">&lt;-</span> educacao <span class="sc">%&gt;%</span> </span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">proporcao =</span> total<span class="sc">/</span>n)  <span class="sc">%&gt;%</span> </span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(proporcao)</span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>lazer <span class="ot">&lt;-</span> frequentes_2 <span class="sc">%&gt;%</span></span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(desc_atividade <span class="sc">==</span> <span class="st">&quot;PRODUÇÃO MUSICAL&quot;</span>)</span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>lazer <span class="ot">&lt;-</span> lazer <span class="sc">%&gt;%</span> </span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">proporcao =</span> total<span class="sc">/</span>n)  <span class="sc">%&gt;%</span> </span>
-<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(proporcao)</span>
-<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>estetica <span class="ot">&lt;-</span> frequentes_3 <span class="sc">%&gt;%</span></span>
-<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(desc_atividade <span class="sc">==</span> <span class="st">&quot;CABELEIREIROS, MANICURE E PEDICURE&quot;</span>)</span>
-<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>estetica <span class="ot">&lt;-</span> estetica <span class="sc">%&gt;%</span> </span>
-<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">proporcao =</span> mulheres<span class="sc">/</span>n)  <span class="sc">%&gt;%</span> </span>
-<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(proporcao)</span>
-<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(fitness,<span class="st">&quot;fitness.csv&quot;</span>)</span>
-<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(educacao,<span class="st">&quot;educacao.csv&quot;</span>)</span>
-<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(lazer,<span class="st">&quot;lazer.csv&quot;</span>)</span>
-<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(estetica,<span class="st">&quot;estetica.csv&quot;</span>)</span></code></pre></div>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>database <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;https://github.com/carlos-itpro/Projeto-Analytics-Descritiva/raw/main/database_limpa.csv&quot;</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>frequentes_2 <span class="ot">&lt;-</span> database <span class="sc">%&gt;%</span> </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(nome_bairro,nome_grupo,desc_atividade,total) <span class="sc">%&gt;%</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(<span class="at">sort =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>frequentes_3 <span class="ot">&lt;-</span> database <span class="sc">%&gt;%</span> </span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(nome_bairro,nome_grupo,desc_atividade,mulheres) <span class="sc">%&gt;%</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(<span class="at">sort =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>fitness <span class="ot">&lt;-</span> frequentes_2 <span class="sc">%&gt;%</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(desc_atividade <span class="sc">==</span> <span class="st">&quot;ATIVIDADES DE CONDICIONAMENTO FÍSICO&quot;</span>)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>fitness <span class="ot">&lt;-</span> fitness <span class="sc">%&gt;%</span> </span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">proporcao =</span> total<span class="sc">/</span>n)  <span class="sc">%&gt;%</span> </span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(proporcao)</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>educacao <span class="ot">&lt;-</span> frequentes_2 <span class="sc">%&gt;%</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(desc_atividade <span class="sc">==</span> <span class="st">&quot;EDUCAÇÃO INFANTIL - PRÉ-ESCOLA&quot;</span>)</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>educacao <span class="ot">&lt;-</span> educacao <span class="sc">%&gt;%</span> </span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">proporcao =</span> total<span class="sc">/</span>n)  <span class="sc">%&gt;%</span> </span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(proporcao)</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>lazer <span class="ot">&lt;-</span> frequentes_2 <span class="sc">%&gt;%</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(desc_atividade <span class="sc">==</span> <span class="st">&quot;PRODUÇÃO MUSICAL&quot;</span>)</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>lazer <span class="ot">&lt;-</span> lazer <span class="sc">%&gt;%</span> </span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">proporcao =</span> total<span class="sc">/</span>n)  <span class="sc">%&gt;%</span> </span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(proporcao)</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>estetica <span class="ot">&lt;-</span> frequentes_3 <span class="sc">%&gt;%</span></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(desc_atividade <span class="sc">==</span> <span class="st">&quot;CABELEIREIROS, MANICURE E PEDICURE&quot;</span>)</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>estetica <span class="ot">&lt;-</span> estetica <span class="sc">%&gt;%</span> </span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">proporcao =</span> mulheres<span class="sc">/</span>n)  <span class="sc">%&gt;%</span> </span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(proporcao)</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(fitness,<span class="st">&quot;fitness.csv&quot;</span>)</span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(educacao,<span class="st">&quot;educacao.csv&quot;</span>)</span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(lazer,<span class="st">&quot;lazer.csv&quot;</span>)</span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(estetica,<span class="st">&quot;estetica.csv&quot;</span>)</span></code></pre></div>
 </div>
 <div id="bairros-com-maior-e-menor-oferta-de-academias" class="section level2">
 <h2>BAIRROS COM MAIOR E MENOR OFERTA DE ACADEMIAS</h2>
