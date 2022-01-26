@@ -1,5 +1,5 @@
 ---
-title: "PROJETO DE ANALYTIsCS DESCRITIVA - MBA BI & ANALYTICS - CIn UFPE"
+title: "PROJETO DE ANALYTICS DESCRITIVA - MBA BI & ANALYTICS - CIn UFPE"
 author: "Carlos Augusto Gomes da Silva"
 date: "`r Sys.Date()`"
 output:
@@ -54,12 +54,14 @@ database <- read_csv("database_full.csv",show_col_types = FALSE)
 database <- select(database, - data_encerramento)
 database <- select(database, - situacao_empresa)
 
-database <- rename(database, c("habitantes_total" = "Total", 
-                               "habitantes_homens" = "Homens",
-                               "habitantes_mulheres" = "Mulheres"))
+database <- rename(database, c("total" = "habitantes_total", 
+                               "homens" = "habitantes_homens",
+                               "mulheres" = "habitantes_mulheres"))
 
 database$nome_fantasia[database$nome_fantasia == "Não Existe"] <- "NENHUM"
 database$nome_fantasia[database$nome_fantasia == "."] <- "NENHUM"
+
+write_csv(database,"database_limpa.csv")
 
 ```
 
@@ -146,42 +148,42 @@ incomodos <- readr::read_csv("incomodos.csv", show_col_types = FALSE)
 ```{r, echo=TRUE,eval=TRUE, message=FALSE}
 
 library(tidyverse)
-database <- read_csv("database_full.csv",show_col_types = FALSE)
+database <- read_csv("database_limpa.csv",show_col_types = FALSE)
 
 frequentes_2 <- database %>% 
-  group_by(nome_bairro,nome_grupo,desc_atividade,Total) %>%
+  group_by(nome_bairro,nome_grupo,desc_atividade,total) %>%
   count(sort = TRUE)
 
 frequentes_3 <- database %>% 
-  group_by(nome_bairro,nome_grupo,desc_atividade,Mulheres) %>%
+  group_by(nome_bairro,nome_grupo,desc_atividade,mulheres) %>%
   count(sort = TRUE)
 
 fitness <- frequentes_2 %>%
   filter(desc_atividade == "ATIVIDADES DE CONDICIONAMENTO FÍSICO")
 
 fitness <- fitness %>% 
-  mutate(proporcao = Total/n)  %>% 
+  mutate(proporcao = total/n)  %>% 
   arrange(proporcao)
 
 educacao <- frequentes_2 %>%
   filter(desc_atividade == "EDUCAÇÃO INFANTIL - PRÉ-ESCOLA")
 
 educacao <- educacao %>% 
-  mutate(proporcao = Total/n)  %>% 
+  mutate(proporcao = total/n)  %>% 
   arrange(proporcao)
 
 lazer <- frequentes_2 %>%
   filter(desc_atividade == "PRODUÇÃO MUSICAL")
 
 lazer <- lazer %>% 
-  mutate(proporcao = Total/n)  %>% 
+  mutate(proporcao = total/n)  %>% 
   arrange(proporcao)
   
 estetica <- frequentes_3 %>%
   filter(desc_atividade == "CABELEIREIROS, MANICURE E PEDICURE")
 
 estetica <- estetica %>% 
-  mutate(proporcao = Mulheres/n)  %>% 
+  mutate(proporcao = mulheres/n)  %>% 
   arrange(proporcao)
   
 
