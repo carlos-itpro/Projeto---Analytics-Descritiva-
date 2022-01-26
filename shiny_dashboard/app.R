@@ -1,5 +1,7 @@
-library(shinythemes)
-library(ggmap)
+require(shinydashboard)
+require(shinythemes)
+require(ggmap)
+require(tid)
 
 body <- dashboardBody(
   fluidRow(
