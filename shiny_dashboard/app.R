@@ -5,9 +5,9 @@ require(tidyverse)
 require(readr)
 require(ggmap)
 
-database <- read_csv("Dados/database_limpa.csv",show_col_types = FALSE)
-frequentes <- read.csv("Dados/frequentes.csv",show_col_types = FALSE)
-frequentes_2 <- read.csv("Dados/frequentes_2.csv",show_col_types = FALSE)
+database <- read_csv("Dados/database_limpa.csv")
+frequentes <- read.csv("Dados/frequentes.csv")
+frequentes_2 <- read.csv("Dados/frequentes_2.csv")
 
 body <- dashboardBody(
   fluidRow(
